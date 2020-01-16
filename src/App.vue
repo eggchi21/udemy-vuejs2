@@ -6,15 +6,10 @@
     <button @click="show = !show">きりかえ</button>
     <br>
     <transition
+      :css="false"
       @before-enter="beforeEnter"
       @enter="enter"
-      @after-enter="afterEnter"
-      @enter-cancelled="entreCancelled"
-
-      @before-leave="beforeLeave"
       @leave="leave"
-      @after-leave="afterLeave"
-      @leave-cancelled="leaveCancelled"
     >
       <div class="circle" v-if="show"></div>
     </transition>
@@ -64,11 +59,33 @@ export default {
     }
   },
   methods:{
-    beforeEnter(el){},
-    enter(el,done){},
+    beforeEnter(el){
+      el.style.transform=`scale(0)`
+    },
+    enter(el,done){
+      let scale =0;
+      const interval = setInterval(()=>{
+        el.style.transform =`scale(${scale})`;
+        scale += 0.1
+        if ( scale >1){
+          clearInterval(interval);
+          done();
+        }
+      },200)
+    },
     afterEnter(el){},
     enterCancelled(el){},
-    beforeLeave(el){},
+    beforeLeave(el){
+      let scale =1;
+      const interval = setInterval(()=>{
+        el.style.transform =`scale(${scale})`;
+        scale -= 0.1
+        if ( scale <0){
+          clearInterval(interval);
+          done();
+        }
+      },200)
+    },
     leave(el,done){},
     afterLeave(el){},
     leaveCancelled(el){},
